@@ -27,6 +27,7 @@ function getTotalX(a, b) {
   const debug = true;
   if (debug) console.log();
   if (debug) console.log("a", a);
+  b.sort((a, b) => a - b);
   if (debug) console.log("b", b);
   // 2, 4, 6, 8, 12, 14, 16
   // 4, 8, 12, 16
