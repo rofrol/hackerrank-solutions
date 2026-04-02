@@ -58,7 +58,7 @@ function getTotalX(a, b) {
   for (let i = 0; i < sumsFiltered.length; i++) {
     let includes = true;
     for (let j = 0; j < b.length; j++) {
-      //if (debug) console.log(`b[${j}]`, b[j]);
+      if (debug) console.log(`b[${j}]`, b[j]);
       //if (debug) console.log(`sumsFiltered[${i}]`, sumsFiltered[i]);
       if (b[j] % sumsFiltered[i] !== 0) {
         includes = false;
