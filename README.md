@@ -2,6 +2,9 @@
 
 Iterate over array with index
 
-for(const [k, v] of arr.entries()) {}
+```javascript
+for (const [k, v] of arr.entries()) {
+}
 
-arr.forEach((v, k) => {})
+arr.forEach((v, k) => {});
+```
