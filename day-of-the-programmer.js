@@ -54,27 +54,28 @@ function dayToDateInRussia(n, year) {
   if (debug) console.log("days", days);
   let daysNumber = n + (isFeb1918 ? 13 : 0);
   if (debug) console.log("daysNumber", daysNumber);
-  function formatDate(d, m, y) {
-    return (
-      d.toString().padStart(2, "0") +
-      "." +
-      m.toString().padStart(2, "0") +
-      "." +
-      y
-    );
-  }
   for (const [k, v] of days.entries()) {
     daysNumber -= v;
     if (debug) console.log("daysNumber", daysNumber);
-    if (daysNumber <= 0) return formatDate(v + daysNumber, k + 1, year);
+    if (daysNumber <= 0) return [year, k + 1, v + daysNumber];
   }
 }
 
+function formatDate(y, m, d) {
+  return (
+    d.toString().padStart(2, "0") +
+    "." +
+    m.toString().padStart(2, "0") +
+    "." +
+    y
+  );
+}
+
 function dayOfProgrammer(year) {
-  return dayToDateInRussia(256, year);
+  return formatDate(...dayToDateInRussia(256, year));
 }
 
 for (t of testArr) {
-  const result = dayToDateInRussia(...Object.values(t.data));
+  const result = formatDate(...dayToDateInRussia(...Object.values(t.data)));
   console.log(result, "eq", t.result, "=>", result === t.result);
 }
