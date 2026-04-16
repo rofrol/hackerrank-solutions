@@ -17,83 +17,71 @@ var testArr = [
   },
 ];
 
-function generateMagicSquares(n) {
-  const debug = true;
-  if (debug) console.log(n);
-  const a = Array.from({ length: 9 }, (_, i) => i + 1);
-  if (debug) console.log("a", a);
-  const e = 0;
+var testArr2 = [
+  {
+    data: [
+      [
+        5, 3, 4, 2, 3, 3, 2, 5, 5, 5, 2, 5, 3, 3, 2, 5, 5, 5, 2, 52, 5, 2, 5, 2,
+        2, 3,
+      ],
+      [
+        5, 3, 4, 2, 3, 3, 2, 5, 5, 5, 2, 5, 3, 3, 2, 5, 5, 5, 2, 52, 5, 2, 5, 2,
+        2, 3,
+      ],
+    ],
+  },
+];
+function formatLevel(l) {
+  return l.a.join("") + "\n" + "_".padStart(l.i, " ");
+}
 
-  a.filter((v) => v !== e).forEach((e, _, a) => {
-    if (debug) console.log(" ".repeat(9 - a.length), e);
-    const numbers = [e];
-    a.filter((v) => v !== e).forEach((e, _, a) => {
-      numbers.push(e);
-      if (debug) console.log(" ".repeat(9 - a.length), e);
-      a.filter((v) => v !== e).forEach((e, _, a) => {
-        numbers.push(e);
-        if (debug) console.log(" ".repeat(9 - a.length), e);
-        if (debug) console.log("numbers", numbers);
-        numbers.length = 0;
-        /* Array(n * n)
-                .keys()
-                .filter((v) => v !== e)
-                .forEach((e) => {
-                  numbers.push(e + 1);
-                  if (debug) console.log(" ".repeat(level), e + 1);
-                  Array(n * n)
-                    .keys()
-                    .filter((v) => v !== e)
-                    .forEach((e) => {
-                      numbers.push(e + 1);
-                      if (debug) console.log(" ".repeat(level), e + 1);
-                      Array(n * n)
-                        .keys()
-                        .filter((v) => v !== e)
-                        .forEach((e) => {
-                          numbers.push(e + 1);
-                          if (debug) console.log(" ".repeat(level), e + 1);
-                          Array(n * n)
-                            .keys()
-                            .filter((v) => v !== e)
-                            .forEach((e) => {
-                              numbers.push(e + 1);
-                              if (debug) console.log(" ".repeat(level), e + 1);
-                              Array(n * n)
-                                .keys()
-                                .filter((v) => v !== e)
-                                .forEach((e) => {
-                                  numbers.push(e + 1);
-                                  if (debug)
-                                    console.log(" ".repeat(level), e + 1);
-                                });
-                            });
-                        });
-                    });
-                }); */
-      });
-    });
-  });
+function formatStack(s) {
+  return s.toReversed().map(formatLevel).join("\n");
+}
+function* generatePermutation(n) {
+  const debug = false;
+  if (debug) console.log(n);
+  const s = [
+    {
+      i: 0,
+      a: Array.from({ length: n }, (_, i) => i),
+    },
+  ];
+  if (debug) console.log(formatStack(s));
+  //let counter = 0;
+  outer: while (s.length > 0) {
+    if (debug) console.log();
+    if (s.at(-1).a.length === 1) {
+      //counter++;
+      let perm = [];
+      for (let i = s.length - 1; i > -1; i--) {
+        perm.push(s[i].a[s[i].i]);
+      }
+      if (debug) console.log("perm", perm.join(""));
+      yield perm;
+      while (s.at(-1).i === s.at(-1).a.length - 1) {
+        s.pop();
+        if (s.length === 0) break outer;
+      }
+      s.at(-1).i++;
+    }
+    const a = s.at(-1).a;
+    const i = s.at(-1).i;
+    s.push({ i: 0, a: a.slice(0, i).concat(a.slice(i + 1)) });
+    if (debug) console.log(formatStack(s));
+  }
+  //console.log("counter", counter);
 }
 function formingMagicSquare(s) {
   const debug = true;
-  if (debug) console.log(s);
-  const sums = [
-    { key: "0002", val: s[0][0] + s[0][1] + s[0][2] },
-    { key: "1012", val: s[1][0] + s[1][1] + s[1][2] },
-    { key: "2022", val: s[2][0] + s[2][1] + s[2][2] },
-    { key: "0020", val: s[0][0] + s[1][0] + s[2][0] },
-    { key: "0121", val: s[0][1] + s[1][1] + s[2][1] },
-    { key: "0222", val: s[0][2] + s[1][2] + s[2][2] },
-    { key: "0022", val: s[0][0] + s[1][1] + s[2][2] },
-    { key: "0220", val: s[0][2] + s[1][1] + s[2][0] },
-  ];
-  if (debug) console.log(sums);
-  const sorted = sums.sort(
-    (a, b) => Math.abs(15 - a.val) - Math.abs(15 - b.val),
-  );
-  if (debug) console.log(sorted);
-  generateMagicSquares(3);
+  // if (debug) console.log(s);
+  //const syms = Array.from({ length: n }, (_, i) => i + 1);
+  const a = generatePermutation(9);
+  let i = a.next();
+  while (!i.done) {
+    if (debug) console.log("perm", i.value.join(""));
+    i = a.next();
+  }
 }
 
 for (t of testArr) {
