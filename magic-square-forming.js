@@ -31,13 +31,7 @@ var testArr2 = [
     ],
   },
 ];
-function formatLevel(l) {
-  return l.a.join("") + "\n" + "_".padStart(l.i, " ");
-}
 
-function formatStack(s) {
-  return s.toReversed().map(formatLevel).join("\n");
-}
 function* generatePermutation(n) {
   const debug = false;
   if (debug) console.log(n);
@@ -71,6 +65,12 @@ function* generatePermutation(n) {
     if (debug) console.log(formatStack(s));
   }
   //console.log("counter", counter);
+  function formatStack(s) {
+    function formatLevel(l) {
+      return l.a.join("") + "\n" + "_".padStart(l.i, " ");
+    }
+    return s.toReversed().map(formatLevel).join("\n");
+  }
 }
 function formingMagicSquare(s) {
   const debug = true;
