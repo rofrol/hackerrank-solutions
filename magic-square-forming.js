@@ -47,10 +47,7 @@ function* generatePermutation(n) {
     if (debug) console.log();
     if (s.at(-1).a.length === 1) {
       //counter++;
-      const perm = [];
-      for (let i = 0; i < s.length; i++) {
-        perm.push(s[i].a[s[i].i]);
-      }
+      const perm = s.map((e) => e.a[e.i]);
       if (debug) console.log("perm", perm.join(""));
       yield perm;
       while (s.at(-1).i === s.at(-1).a.length - 1) {
