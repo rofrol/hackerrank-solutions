@@ -10,25 +10,18 @@ var testArr = [
   {
     data: [
       [4, 9, 2],
+      [3, 5, 7],
+      [8, 1, 5],
+    ],
+    expected: 1,
+  },
+  {
+    data: [
+      [4, 9, 2],
       [4, 5, 7],
       [6, 1, 6],
     ],
-    expected: 4,
-  },
-];
-
-var testArr2 = [
-  {
-    data: [
-      [
-        5, 3, 4, 2, 3, 3, 2, 5, 5, 5, 2, 5, 3, 3, 2, 5, 5, 5, 2, 52, 5, 2, 5, 2,
-        2, 3,
-      ],
-      [
-        5, 3, 4, 2, 3, 3, 2, 5, 5, 5, 2, 5, 3, 3, 2, 5, 5, 5, 2, 52, 5, 2, 5, 2,
-        2, 3,
-      ],
-    ],
+    expected: 3, // in description it is 4, but it is 3 for square 492357816
   },
 ];
 
@@ -70,14 +63,13 @@ function* generatePermutation(n) {
   }
 }
 
-const s1 = [
-  [8, 3, 4],
-  [1, 5, 9],
-  [6, 7, 2],
-];
-
+function isSquare(s) {
+  if (!Array.isArray(s)) return false;
+  return !s.some((e) => e.length !== s.length);
+}
 function isMagicSquare(s) {
   const debug = false;
+  if (!isSquare(s)) return false;
   if (s.length === 2) return false;
   let sum =
     s.length > 9
@@ -115,6 +107,21 @@ function isMagicSquare(s) {
   return true;
 }
 
+function unflatSquare(s) {
+  let debug = false;
+  const n = Math.sqrt(s.length);
+  const s2 = s.reduce(
+    (acc, cur, i) => {
+      acc.at(-1).push(cur);
+      if ((i + 1) % n === 0 && i + 1 !== s.length) acc.push([]);
+      return acc;
+    },
+    [[]],
+  );
+  if (debug) console.log("s2\n", s2);
+  return s2;
+}
+
 function getCost(a, b) {
   const debug = false;
   if (debug) console.log(a);
@@ -126,7 +133,7 @@ function getCost(a, b) {
 }
 
 function formingMagicSquare(s) {
-  const debug = true;
+  const debug = false;
   // if (debug) console.log(s);
   // const syms = Array.from({ length: n }, (_, i) => i + 1);
   if (debug) console.log(isMagicSquare(s));
@@ -137,28 +144,53 @@ function formingMagicSquare(s) {
   while (!i.done) {
     // if (c === 20) break;
     // if (debug) console.log("perm", i.value.join(""));
-    if (!isMagicSquare(i.value)) continue;
-    let cost = getCost(
-      s.flat(),
-      i.value.map((v) => v + 1),
-    );
-    if (cost <= minCost) {
-      minCost = cost;
-      if (debug) console.log("perm", i.value.join(""));
-      if (debug) console.log("minCost", minCost);
+    const s2 = i.value.map((v) => v + 1);
+    // if (debug) console.log("s2", s2.join(""));
+    const square = unflatSquare(s2);
+    if (isMagicSquare(square)) {
+      // if (debug) console.log("square", square);
+      let cost = getCost(s.flat(), s2);
+      // change to <= for debuging
+      if (cost < minCost) {
+        minCost = cost;
+        if (debug) console.log("minCost", minCost);
+        if (debug) console.log("s2", s2.join(""));
+      }
     }
+    // if (s2.join("") === "834159672") break;
     i = a.next();
     c++;
   }
-  if (debug) console.log("c", c);
-  if (debug) console.log("minCost", minCost);
+  // if (debug) console.log("c", c);
+  // if (debug) console.log("minCost", minCost);
   return minCost;
+}
+
+function arrEqual(a, b) {
+  return a.length === b.length && !a.some((e, i) => e !== b[i]);
 }
 
 for (t of testArr) {
   const expected = formingMagicSquare(t.data);
-  console.log("\n\n");
+  console.log("\n\n--------------------------");
   console.log(expected, "eq", t.expected, "=>", expected === t.expected);
 }
 
+const s1 = [
+  [8, 3, 4],
+  [1, 5, 9],
+  [6, 7, 2],
+];
+
+const s2 = [8, 3, 4, 1, 5, 9, 6, 7, 2];
+
 console.log(isMagicSquare(s1));
+console.log(isMagicSquare(unflatSquare(s2)));
+console.log(isMagicSquare(s2));
+console.log(isSquare(s1));
+console.log(isSquare(unflatSquare(s2)));
+console.log(isSquare(s2));
+console.log(unflatSquare(s2));
+console.log(arrEqual([8, 3, 4, 1, 5, 9, 6, 7, 2], [8, 3, 4, 1, 5, 9, 6, 7, 2]));
+console.log(arrEqual([7, 3, 4, 1, 5, 9, 6, 7, 2], [8, 3, 4, 1, 5, 9, 6, 7, 2]));
+console.log(getCost("492457616".split(""), "492357816".split("")));
